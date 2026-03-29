@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quanto Cobrar — Calculadora para Autônomos</title>
+<meta name="description" content="Descubra o valor mínimo por hora que você precisa cobrar para não trabalhar no prejuízo. Calculadora gratuita para freelancers e autônomos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f4ef;
+  --surface: #ffffff;
+  --surface2: #f0ece4;
+  --border: #e0dbd0;
+  --border2: #ccc7ba;
+  --text: #1c1917;
+  --muted: #78736a;
+  --accent: #1c6e3d;
+  --accent-light: #e8f5ee;
+  --accent-text: #0f4425;
+  --warn: #92400e;
+  --warn-light: #fef3c7;
+  --danger: #991b1b;
+  --danger-light: #fee2e2;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── nav ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(247,244,239,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+.nav-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.25rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a {
+  font-size: .85rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  background: var(--text) !important;
+  color: var(--bg) !important;
+  padding: .4rem 1rem !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: opacity .2s !important;
+}
+.nav-cta:hover { opacity: .85 !important; }
+
+/* ── hero ── */
+.hero {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 5rem 2rem 3rem;
+  text-align: center;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: .3rem .9rem;
+  border-radius: 99px;
+  margin-bottom: 1.5rem;
+  animation: fadeUp .6s ease both;
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero h1 em { color: var(--accent); font-style: italic; }
+
+.hero p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+  animation: fadeUp .6s .2s ease both;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  animation: fadeUp .6s .3s ease both;
+}
+.hstat { text-align: center; }
+.hstat .hn {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  color: var(--text);
+  line-height: 1;
+}
+.hstat .hl { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── calculadora ── */
+.calc-container {
+  max-width: 860px;
+  margin: 0 auto 5rem;
+  padding: 0 1.5rem;
+  animation: fadeUp .6s .35s ease both;
+}
+
+.calc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 40px rgba(0,0,0,0.06);
+}
+
+.calc-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+}
+
+.calc-header h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.free-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--accent-light);
+  border: 1px solid #b6dfc7;
+  padding: .25rem .7rem;
+  border-radius: 99px;
+}
+
+.calc-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* coluna esquerda — inputs */
+.calc-inputs {
+  padding: 2rem;
+  border-right: 1px solid var(--border);
+}
+
+.input-section { margin-bottom: 2rem; }
+.input-section:last-child { margin-bottom: 0; }
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .9rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+.field { display: flex; flex-direction: column; gap: .35rem; }
+
+.field label {
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.field input {
+  font-family: 'Outfit', sans-serif;
+  font-size: .95rem;
+  font-weight: 500;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .55rem .75rem;
+  color: var(--text);
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(28,110,61,0.1);
+}
+
+.prefix-wrap {
+  position: relative;
+}
+.prefix-wrap .prefix {
+  position: absolute;
+  left: .75rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: .85rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+.prefix-wrap input { padding-left: 2rem; }
+
+/* coluna direita — resultado */
+.calc-results {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.result-main {
+  background: var(--accent-light);
+  border: 1px solid #b6dfc7;
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.result-main .rlabel {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .5rem;
+}
+
+.result-main .rvalue {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  color: var(--accent-text);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+
+.result-main .rsub {
+  font-size: .8rem;
+  color: var(--accent);
+}
+
+.mini-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .6rem;
+}
+
+.mini-metric {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: .9rem 1rem;
+}
+.mini-metric .mm-label { font-size: .72rem; color: var(--muted); margin-bottom: .3rem; }
+.mini-metric .mm-val { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+
+.breakdown-box {
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+
+.breakdown-title {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .9rem;
+}
+
+.brow {
+  display: flex;
+  justify-content: space-between;
+  font-size: .82rem;
+  padding: .3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.brow:last-child { border-bottom: none; }
+.brow .bl { color: var(--muted); }
+.brow .bv { font-weight: 500; }
+.brow.btotal { font-size: .9rem; font-weight: 600; padding-top: .5rem; }
+.brow.btotal .bl { color: var(--text); }
+
+.tip-box {
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  font-size: .82rem;
+  line-height: 1.55;
+  border: 1px solid transparent;
+  transition: background .4s, border-color .4s, color .4s;
+}
+.tip-box.ok      { background: var(--accent-light);  border-color: #b6dfc7; color: var(--accent-text); }
+.tip-box.warn    { background: var(--warn-light);    border-color: #fcd34d; color: var(--warn); }
+.tip-box.danger  { background: var(--danger-light);  border-color: #fca5a5; color: var(--danger); }
+
+/* ── como funciona ── */
+.how-section {
+  max-width: 860px;
+  margin: 0 auto 5rem;
+  padding: 0 1.5rem;
+}
+
+.how-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: .5rem;
+}
+.how-section .sub { color: var(--muted); font-size: .95rem; margin-bottom: 2.5rem; }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.step-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.2rem;
+  color: var(--border2);
+  line-height: 1;
+  margin-bottom: .8rem;
+}
+
+.step h3 { font-size: 1rem; font-weight: 600; margin-bottom: .4rem; }
+.step p  { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+/* ── fórmula ── */
+.formula-section {
+  max-width: 860px;
+  margin: 0 auto 5rem;
+  padding: 0 1.5rem;
+}
+
+.formula-box {
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.formula-box .fl {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(.9rem, 2.5vw, 1.2rem);
+  letter-spacing: .02em;
+  line-height: 2;
+}
+.formula-box .fl span { color: #86efac; }
+.formula-box .fl em   { color: #fbbf24; font-style: normal; }
+
+.formula-box .fdesc {
+  font-size: .82rem;
+  color: #a8a29e;
+  margin-top: 1rem;
+}
+
+/* ── faq ── */
+.faq-section {
+  max-width: 700px;
+  margin: 0 auto 5rem;
+  padding: 0 1.5rem;
+}
+
+.faq-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 0;
+}
+
+.faq-item summary {
+  font-weight: 500;
+  font-size: .95rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.faq-item summary::after {
+  content: '+';
+  font-size: 1.3rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform .2s;
+}
+.faq-item[open] summary::after { transform: rotate(45deg); }
+
+.faq-item p {
+  font-size: .88rem;
+  color: var(--muted);
+  margin-top: .8rem;
+  line-height: 1.7;
+}
+
+/* ── footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  font-size: .8rem;
+  color: var(--muted);
+}
+footer a { color: var(--muted); }
+
+/* ── responsivo ── */
+@media (max-width: 640px) {
+  .calc-body { grid-template-columns: 1fr; }
+  .calc-inputs { border-right: none; border-bottom: 1px solid var(--border); }
+  .steps { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.5rem; }
+  .field-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Quanto<span>Cobrar</span></a>
+  <div class="nav-links">
+    <a href="#como-funciona">Como funciona</a>
+    <a href="#faq">Dúvidas</a>
+    <a href="#calculadora" class="nav-cta">Calcular agora</a>
+  </div>
+</nav>
+
+<!-- hero -->
+<section class="hero">
+  <div class="hero-tag">100% gratuito · sem cadastro</div>
+  <h1>Pare de cobrar <em>no chute.</em><br>Descubra seu valor real.</h1>
+  <p>A maioria dos autônomos cobra menos do que precisa e só percebe quando o mês fecha no vermelho. Essa calculadora mostra o valor mínimo por hora para você trabalhar com lucro.</p>
+
+  <div class="hero-stats">
+    <div class="hstat">
+      <div class="hn">73%</div>
+      <div class="hl">dos freelancers cobram<br>abaixo do necessário</div>
+    </div>
+    <div class="hstat">
+      <div class="hn">2 min</div>
+      <div class="hl">para descobrir<br>seu preço ideal</div>
+    </div>
+    <div class="hstat">
+      <div class="hn">grátis</div>
+      <div class="hl">sem limite de uso<br>sem cadastro</div>
+    </div>
+  </div>
+</section>
+
+<!-- calculadora -->
+<section class="calc-container" id="calculadora">
+  <div class="calc-card">
+    <div class="calc-header">
+      <h2>Calculadora de preço por hora</h2>
+      <span class="free-badge">Gratuito</span>
+    </div>
+
+    <div class="calc-body">
+      <!-- inputs -->
+      <div class="calc-inputs">
+
+        <div class="input-section">
+          <p class="section-label">Custos fixos mensais (R$)</p>
+          <div class="field-grid">
+            <div class="field">
+              <label>Aluguel / moradia</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="aluguel" value="1200" min="0" oninput="calc()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Alimentação</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="alimentacao" value="800" min="0" oninput="calc()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Transporte</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="transporte" value="300" min="0" oninput="calc()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Internet / telefone</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="internet" value="150" min="0" oninput="calc()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Saúde / plano</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="saude" value="200" min="0" oninput="calc()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Outros custos</label>
+              <div class="prefix-wrap"><span class="prefix">R$</span>
+                <input type="number" id="outros" value="300" min="0" oninput="calc()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <p class="section-label">Disponibilidade e encargos</p>
+          <div class="field-grid">
+            <div class="field">
+              <label>Horas disponíveis / semana</label>
+              <input type="number" id="horas" value="30" min="1" max="80" oninput="calc()">
+            </div>
+            <div class="field">
+              <label>Semanas trabalhadas / mês</label>
+              <input type="number" id="semanas" value="4" min="1" max="5" step="0.5" oninput="calc()">
+            </div>
+            <div class="field">
+              <label>Reserva de emergência (%)</label>
+              <input type="number" id="reserva" value="20" min="0" max="100" oninput="calc()">
+            </div>
+            <div class="field">
+              <label>Impostos estimados (%)</label>
+              <input type="number" id="impostos" value="15" min="0" max="60" oninput="calc()">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- resultados -->
+      <div class="calc-results">
+
+        <div class="result-main">
+          <div class="rlabel">Mínimo que você deve cobrar</div>
+          <div class="rvalue" id="rValor">R$ 0</div>
+          <div class="rsub">por hora trabalhada</div>
+        </div>
+
+        <div class="mini-metrics">
+          <div class="mini-metric">
+            <div class="mm-label">Total de custos</div>
+            <div class="mm-val" id="mCustos">R$ 0</div>
+          </div>
+          <div class="mini-metric">
+            <div class="mm-label">Horas / mês</div>
+            <div class="mm-val" id="mHoras">0 h</div>
+          </div>
+          <div class="mini-metric">
+            <div class="mm-label">Precisa faturar</div>
+            <div class="mm-val" id="mFaturar">R$ 0</div>
+          </div>
+          <div class="mini-metric">
+            <div class="mm-label">Por dia (8h)</div>
+            <div class="mm-val" id="mDia">R$ 0</div>
+          </div>
+        </div>
+
+        <div class="breakdown-box">
+          <div class="breakdown-title">Detalhamento do cálculo</div>
+          <div class="brow">
+            <span class="bl">Custos fixos</span>
+            <span class="bv" id="dCustos">R$ 0</span>
+          </div>
+          <div class="brow">
+            <span class="bl">+ Reserva de emergência</span>
+            <span class="bv" id="dReserva">R$ 0</span>
+          </div>
+          <div class="brow">
+            <span class="bl">+ Impostos</span>
+            <span class="bv" id="dImpostos">R$ 0</span>
+          </div>
+          <div class="brow btotal">
+            <span class="bl">Total a faturar</span>
+            <span class="bv" id="dTotal">R$ 0</span>
+          </div>
+        </div>
+
+        <div class="tip-box ok" id="tipBox">
+          Preencha seus custos para ver a análise personalizada.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- como funciona -->
+<section class="how-section" id="como-funciona">
+  <h2>Como funciona</h2>
+  <p class="sub">Três passos simples para descobrir seu preço justo.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Informe seus custos</h3>
+      <p>Liste todos os seus gastos mensais fixos: moradia, alimentação, transporte, saúde e outros.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Defina sua disponibilidade</h3>
+      <p>Quantas horas por semana você consegue trabalhar? E quantas semanas por mês?</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Descubra seu preço mínimo</h3>
+      <p>A calculadora mostra o valor que você precisa cobrar por hora para cobrir todos os custos e ainda ter reserva.</p>
+    </div>
+  </div>
+</section>
+
+<!-- fórmula -->
+<section class="formula-section">
+  <div class="formula-box">
+    <div class="fl">
+      <span>Valor/hora</span> = <em>(custos + reserva + impostos)</em> ÷ <span>horas/mês</span>
+    </div>
+    <div class="fdesc">
+      Essa é a fórmula por trás da calculadora. Simples, mas a maioria dos autônomos nunca fez essa conta.
+    </div>
+  </div>
+</section>
+
+<!-- faq -->
+<section class="faq-section" id="faq">
+  <h2>Dúvidas frequentes</h2>
+
+  <details class="faq-item">
+    <summary>Esse é o valor que devo cobrar dos clientes?</summary>
+    <p>Esse é o valor <strong>mínimo</strong> para não ter prejuízo. Na prática, você deve cobrar mais — levando em conta sua experiência, o mercado da sua área e o valor que entrega ao cliente. Use esse número como piso, não como teto.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Por que incluir reserva de emergência?</summary>
+    <p>Autônomos não têm FGTS, 13º ou férias remuneradas. A reserva compensa esses meses de baixa demanda, férias e imprevistos. 20% é um ponto de partida razoável.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Quais impostos devo considerar?</summary>
+    <p>Depende do seu regime. MEI paga em torno de 5-6% de DAS. Simples Nacional varia de 4% a 19%. Autônomo pessoa física paga INSS (11-20%) + IRPF (0-27,5%). Consulte um contador para o seu caso específico.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Posso usar para projetos por entrega?</summary>
+    <p>Sim! Estime quantas horas o projeto vai tomar, multiplique pelo seu valor/hora e você tem o preço mínimo do projeto. Adicione uma margem de segurança de 20-30% para imprevistos.</p>
+  </details>
+
+  <details class="faq-item">
+    <summary>Meus dados ficam salvos?</summary>
+    <p>Não salvamos nenhum dado. Tudo é calculado diretamente no seu navegador. Não há cadastro, não há servidor armazenando suas informações.</p>
+  </details>
+</section>
+
+<footer>
+  <p>Quanto Cobrar &copy; 2025 &mdash; Calculadora gratuita para autônomos e freelancers brasileiros.</p>
+  <p style="margin-top:.4rem;">Feito com cuidado para quem trabalha por conta própria.</p>
+</footer>
+
+<script>
+function fmt(v) {
+  return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+}
+
+function calc() {
+  const get = id => parseFloat(document.getElementById(id).value) || 0;
+
+  const custos   = get('aluguel') + get('alimentacao') + get('transporte')
+                 + get('internet') + get('saude') + get('outros');
+  const horas    = Math.max(get('horas'), 1);
+  const semanas  = Math.max(get('semanas'), 1);
+  const resv     = get('reserva') / 100;
+  const imp      = get('impostos') / 100;
+
+  const reservaVal  = custos * resv;
+  const impostosVal = custos * imp;
+  const totalNeeded = custos + reservaVal + impostosVal;
+  const horasMes    = horas * semanas;
+  const porHora     = totalNeeded / horasMes;
+
+  document.getElementById('rValor').textContent   = fmt(porHora) + '/h';
+  document.getElementById('mCustos').textContent  = fmt(custos);
+  document.getElementById('mHoras').textContent   = Math.round(horasMes) + ' h';
+  document.getElementById('mFaturar').textContent = fmt(totalNeeded);
+  document.getElementById('mDia').textContent     = fmt(porHora * 8);
+  document.getElementById('dCustos').textContent  = fmt(custos);
+  document.getElementById('dReserva').textContent = fmt(reservaVal);
+  document.getElementById('dImpostos').textContent= fmt(impostosVal);
+  document.getElementById('dTotal').textContent   = fmt(totalNeeded);
+
+  const tip = document.getElementById('tipBox');
+  if (porHora < 20) {
+    tip.className = 'tip-box danger';
+    tip.textContent = 'Seu mínimo está muito baixo (abaixo de R$ 20/h). Revise seus custos ou aumente as horas disponíveis. Cobrar tão pouco dificulta a sustentabilidade do seu trabalho.';
+  } else if (porHora < 50) {
+    tip.className = 'tip-box warn';
+    tip.textContent = 'Valor baixo para o mercado atual. Considere reduzir custos fixos ou especializar-se em um nicho que permita cobrar mais. Esse é o mínimo — tente cobrar acima disso.';
+  } else if (porHora < 150) {
+    tip.className = 'tip-box ok';
+    tip.textContent = 'Bom valor de referência! Lembre-se: esse é o mínimo. Profissionais com experiência e especialização cobram bem acima disso. Ajuste conforme o mercado da sua área.';
+  } else {
+    tip.className = 'tip-box warn';
+    tip.textContent = 'Seus custos são altos. Certifique-se de que seu nicho de atuação suporte esse valor. Se sim, ótimo — profissionais especializados cobram esse ou mais.';
+  }
+}
+
+calc();
+</script>
+</body>
+</html>
